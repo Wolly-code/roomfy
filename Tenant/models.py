@@ -19,7 +19,7 @@ class Tenant(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     status=models.BooleanField(default=True)
     photo1 = models.ImageField(upload_to="tenant", blank=True)
-    photo2 = models.ImageField(upload_to="tenant", blank=True)
+  
 
     class Meta:
         # This helps to order the data in the admin portion
@@ -38,14 +38,13 @@ class Report_Tenant(models.Model):
         return f'{self.post} having complain "{self.description}"-{self.Reporter}'
 
 
-class Booking_Tenant(models.Model):
+class Appointment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     Tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    check_in = models.DateTimeField()
-    check_out = models.DateTimeField()
+    appointment_date = models.DateTimeField()
 
     def __str__(self) -> str:
-        return f'{self.user} has booked {self.room} from {self.check_in} to {self.check_out}'
+        return f'{self.user} has booked appointment on {self.Tenant} on the date :{self.appointment_date}'
 
 
 class Payment_Tenant(models.Model):

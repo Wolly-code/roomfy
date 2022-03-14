@@ -1,6 +1,9 @@
 from rest_framework import serializers
-from .models import Report_Room, Room,Booking_Room
+from Room.models import Room
+from Tenant.models import Tenant
 from django.contrib.auth.models import User
+from .models import Profile
+
 
 class UserSerializer(serializers.ModelSerializer):
     # rooms = serializers.PrimaryKeyRelatedField(
@@ -17,3 +20,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         # fields = ['id', 'username', 'rooms', 'owner']
         fields = ['id', 'username', 'room']
+
+
+class ProfileSerializers(serializers.ModelSerializer):
+    user=serializers.ReadOnlyField(source='user.username')
+    class Meta:
+        model = Profile
+        fields = '__all__'

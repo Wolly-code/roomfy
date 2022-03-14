@@ -5,4 +5,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('signup', views.signup),
     path('login', views.login),
+    path('profile', views.ViewProfile.as_view()),
 ]

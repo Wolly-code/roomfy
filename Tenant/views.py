@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics, status, permissions, mixins
-
 from Room import serializers
-from .models import Report_Tenant, Tenant
-from .serializers import TenantSerializer,ReportTenant
+from .models import Appointment, Report_Tenant, Tenant
+from .serializers import AppointmentSerializer, TenantSerializer, ReportTenant
 from rest_framework.exceptions import ValidationError
 
 # Create your views here.
@@ -38,6 +37,7 @@ class TenantRetrieveDestroy(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         serializer.save()
 
+
 class TenantReportCreate(generics.CreateAPIView):
     serializer_class = ReportTenant
     permission_classes = [
@@ -55,8 +55,33 @@ class TenantReportCreate(generics.CreateAPIView):
         serializer.save(Reporter=self.request.user,
                         post=Tenant.objects.get(pk=self.kwargs['pk']))
 
+
 class ViewAllReport(generics.ListAPIView):
-    serializer_class=ReportTenant
-    permissions=[permissions.IsAuthenticated]
+    serializer_class = ReportTenant
+    permissions = [permissions.IsAuthenticated]
+
     def get_queryset(self):
         return Report_Tenant.objects.all()
+
+
+class TenantAppointment(generics.ListCreateAPIView):
+    serializer_class = AppointmentSerializer
+    permissions = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Appointment.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # available_appointment = []
+        # tenant_list = Tenant.objects.all()
+
+        # for tenant in tenant_list:
+        #     if check_availability_tenant(tenant=tenant, appoint=serializer.validated_data['appointment_date']):
+        #         available_appointment.append(tenant)
+
+        # if len(available_appointment) > 0:
+        #     tenant = available_appointment[0]
+        #     serializer.save(user=self.request.user, Tenant=tenant)
+        # else:
+        #     raise ValidationError('You have already booked an appointment')
+        serializer.save(user=self.request.user)

@@ -10,10 +10,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        # fields = ['id', 'title', 'poster',
-        #           'poster_id', 'description', 'created', 'reports', 'email', 'phone_number', 'location', 'property_type',
-        #           'total_rooms', 'price', 'internet', 'parking', 'Balcony', 'Yard', 'Disabled_Access', 'Garage', 'status','photo1','photo2']
-        fields='__all__'
+        fields = '__all__'
+
     def get_reports(self, post):
         return Report_Room.objects.filter(post=post).count()
 
@@ -30,9 +28,11 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking_Room
         fields = ['id', 'user', 'room', 'check_in', 'check_out']
-        # fields="__all__"
+
+
 class FavouriteSerializer(serializers.ModelSerializer):
-    user=serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
-        model=Favorite
-        fields="__all__"
+        model = Favorite
+        fields = "__all__"
