@@ -1,4 +1,3 @@
-from unicodedata import name
 from django.urls import path, include
 from . import views
 urlpatterns = [
@@ -10,5 +9,8 @@ urlpatterns = [
     path('booking', views.BookingList.as_view(), name='BookingList'),
     # path('booking/<int:pk>', views.BookingRetrieveDelete.as_view(),
     #      name='Booking_delete'),
+    path('fav/', views.Fav.as_view()),
+    path('getFav/',views.FavView.as_view())
+
 
 ]

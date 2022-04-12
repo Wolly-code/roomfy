@@ -4,6 +4,7 @@ from Room import serializers
 from .models import Appointment, Report_Tenant, Tenant
 from .serializers import AppointmentSerializer, TenantSerializer, ReportTenant
 from rest_framework.exceptions import ValidationError
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -85,3 +86,5 @@ class TenantAppointment(generics.ListCreateAPIView):
         # else:
         #     raise ValidationError('You have already booked an appointment')
         serializer.save(user=self.request.user)
+
+

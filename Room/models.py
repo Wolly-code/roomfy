@@ -14,6 +14,7 @@ class Room(models.Model):
     property_type = models.CharField(max_length=30)
     total_rooms = models.IntegerField()
     price = models.IntegerField()
+    security_deposit=models.IntegerField()
     internet = models.BooleanField(default=False)
     parking = models.BooleanField(default=False)
     Balcony = models.BooleanField(default=False)
@@ -28,8 +29,8 @@ class Room(models.Model):
         # This helps to order the data in the admin portion
         ordering = ['-created']
 
-    def __str__(self) -> str:
-        return f'{self.title}'
+    def __str__(self):
+        return self.title 
 
 
 class Report_Room(models.Model):
@@ -62,10 +63,10 @@ class Payment_Room(models.Model):
         return f'{self.user} has paid the amount of {self.Amount} {self.Payment_date}'
 
 
-class Favorite(models.Model):
+class Favourite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    status = models.BooleanField(default=False)
+    room = models.ForeignKey(Room,on_delete=models.CASCADE)
+    favourite = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
-        return f'{self.user} has {self.user} the room :{self.room}'
+    def __str__(self):
+        return f"Room={self .room} || User={self.user.username} || Favourite={self.favourite}"

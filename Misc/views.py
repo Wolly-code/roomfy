@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from django.db import IntegrityError
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions, mixins
-
+from rest_framework.exceptions import ValidationError
 from Misc.models import Profile
 from Misc.serializers import ProfileSerializers
 
@@ -44,20 +44,33 @@ def signup(request):
             return JsonResponse({'error': 'That username has already been taken. Please choose a new username'}, status=400)
 
 
-class ViewProfile(generics.ListCreateAPIView, mixins.UpdateModelMixin):
+class ViewProfile(generics.ListCreateAPIView):
     serializer_class = ProfileSerializers
-
     permission_classes = [
         permissions.IsAuthenticated
     ]
-    queryset = Profile.objects.all()
 
-    # def get_queryset(self):
-    #     user=self.request.user
-    #     return Profile.objects.filter(user=user)
+    def get_queryset(self):
+        user = self.request.user
+        return Profile.objects.filter(user=user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+class UpdateProfile(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ProfileSerializers
+
     def perform_update(self, serializer):
         return serializer.save()
+
+    def get_queryset(self):
+        user = self.request.user
+        return Profile.objects.filter(user=user)
+    def delete(self, request, *args, **kwargs):
+        user = Profile.objects.filter(pk=kwargs['pk'], user=self.request.user)
+        if user.exists():
+            return self.destroy(request, *args, **kwargs)
+        else:
+            raise ValidationError('Thats not your post to delete')

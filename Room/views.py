@@ -1,10 +1,21 @@
-from rest_framework import generics, permissions
-from .models import Report_Room, Room, Booking_Room
-from .serializers import ReportSerializer,BookingSerializer, RoomSerializer
+from asyncio import mixins
+from distutils.log import error
+from telnetlib import STATUS
+from django.http import HttpResponse
+from rest_framework import generics, permissions, mixins, serializers
+from .models import Favourite, Report_Room, Room, Booking_Room
+from .serializers import ReportSerializer, BookingSerializer, RoomSerializer, FavouriteSerializers
 from rest_framework.exceptions import ValidationError
-from datetime import timezone
 from Misc.booking_functions.availability import check_availability_room
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
+import json
+
+
 class RoomList(generics.ListCreateAPIView):
+
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     permission_classes = [
@@ -42,8 +53,10 @@ class RoomRetriveDestroy(generics.RetrieveUpdateDestroyAPIView):
             return self.destroy(request, *args, **kwargs)
         else:
             raise ValidationError('Thats not your post to delete')
+
     def perform_update(self, serializer):
         serializer.save()
+
 
 class ReportCreate(generics.CreateAPIView):
     serializer_class = ReportSerializer
@@ -68,6 +81,7 @@ class ReportCreate(generics.CreateAPIView):
     #         return Response(status=status.HTTP_204_NO_CONTENT)
     #     else:
     #         raise ValidationError('You never reported for this post')
+
 
 class BookingList(generics.ListCreateAPIView):
     serializer_class = BookingSerializer
@@ -97,3 +111,42 @@ class BookingList(generics.ListCreateAPIView):
             serializer.save(user=self.request.user, room=room)
         else:
             raise ValidationError('This room is not available')
+
+
+class FavView(generics.ListAPIView):
+    permissions = [permissions.IsAuthenticated]
+    serializer_class = FavouriteSerializers
+
+    def get_queryset(self):
+        return Favourite.objects.filter(user=self.request.user)
+
+
+class Fav(APIView):
+    permissions = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # query = Favourite.objects.all()
+            # serializer = FavouriteSerializers(query,many=True)
+            data = request.data
+            # data = request.data
+            print(data)
+            c_user = request.user
+            room_id = data['id']
+            room_obj = Room.objects.get(id=room_id)
+            fav_obj = Favourite.objects.filter(
+                room=room_obj).filter(user=c_user).first()
+            if fav_obj:
+                old_fav = fav_obj.favourite
+                fav_obj.favourite = not old_fav
+                fav_obj.save()
+            else:
+                Favourite.objects.create(
+                    room=room_obj,
+                    user=c_user,
+                    favourite=True
+                )
+            response_msg = {'error': False}
+        except:
+            response_msg = {'error': True}
+        return Response(response_msg)
