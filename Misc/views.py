@@ -57,6 +57,16 @@ class ViewProfile(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+class ViewAllProfile(generics.ListAPIView):
+    serializer_class = ProfileSerializers
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Profile.objects.all()
+
 
 class UpdateProfile(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -68,6 +78,7 @@ class UpdateProfile(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Profile.objects.filter(user=user)
+        
     def delete(self, request, *args, **kwargs):
         user = Profile.objects.filter(pk=kwargs['pk'], user=self.request.user)
         if user.exists():

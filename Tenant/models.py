@@ -1,3 +1,4 @@
+import email
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
@@ -10,6 +11,7 @@ class Tenant(models.Model):
     phone_number = models.CharField(max_length=15)
     occupation = models.CharField(max_length=20)
     age = models.IntegerField()
+    email=models.EmailField()
     pet_owner = models.BooleanField()
     location = models.CharField(max_length=20)
     description = models.CharField(max_length=100)

@@ -11,6 +11,8 @@ class Profile(models.Model):
     bio = models.CharField(max_length=50)
     email=models.EmailField()
     profile_pic=models.ImageField(upload_to="user")
+    location=models.CharField(max_length=50)
+    gender=models.CharField(max_length=10)
 
 
     def __str__(self) -> str:

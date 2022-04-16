@@ -24,10 +24,10 @@ class ReportSerializer(serializers.ModelSerializer):
 
 class BookingSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-
+    room_owner = serializers.ReadOnlyField(source='room.poster.username')
     class Meta:
         model = Booking_Room
-        fields = ['id', 'user', 'room', 'check_in', 'check_out']
+        fields = ['id', 'user', 'room', 'check_in', 'check_out','room_owner']
 
 
 class FavouriteSerializers(serializers.ModelSerializer):
