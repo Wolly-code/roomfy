@@ -14,7 +14,7 @@ class Room(models.Model):
     property_type = models.CharField(max_length=30)
     total_rooms = models.IntegerField()
     price = models.IntegerField()
-    security_deposit=models.IntegerField()
+    security_deposit = models.IntegerField()
     internet = models.BooleanField(default=False)
     parking = models.BooleanField(default=False)
     Balcony = models.BooleanField(default=False)
@@ -30,7 +30,7 @@ class Room(models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return self.title 
+        return self.title
 
 
 class Report_Room(models.Model):
@@ -58,6 +58,7 @@ class Payment_Room(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     Amount = models.IntegerField()
     Payment_date = models.DateTimeField(auto_now_add=True)
+    remarks = models.CharField(max_length=30,null=True)
 
     def __str__(self) -> str:
         return f'{self.user} has paid the amount of {self.Amount} {self.Payment_date}'
@@ -65,7 +66,7 @@ class Payment_Room(models.Model):
 
 class Favourite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room,on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     favourite = models.BooleanField(default=False)
 
     def __str__(self):

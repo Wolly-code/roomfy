@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Favourite, Report_Room, Room, Booking_Room
+from .models import Favourite, Report_Room, Room, Booking_Room, Payment_Room
 from django.contrib.auth.models import User
 
 
@@ -22,17 +22,27 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = ['id', 'description']
 
 
+class PaymentSerializer(serializers.ModelSerializer):
+    room_owner = serializers.ReadOnlyField(source='room.poster.username')
+    user=serializers.ReadOnlyField(source='user.username')
+    # room=serializers.SerializerMethodField()
+    class Meta:
+        model = Payment_Room
+        fields = "__all__"
+
+
 class BookingSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     room_owner = serializers.ReadOnlyField(source='room.poster.username')
+
     class Meta:
         model = Booking_Room
-        fields = ['id', 'user', 'room', 'check_in', 'check_out','room_owner']
+        fields = ['id', 'user', 'room', 'check_in', 'check_out', 'room_owner']
 
 
 class FavouriteSerializers(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     class Meta:
         model = Favourite
-        fields = ('id', 'favourite', 'room','user')
+        fields = ('id', 'favourite', 'room', 'user')
         # fields="__all__"

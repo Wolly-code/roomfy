@@ -3,8 +3,8 @@ from distutils.log import error
 from telnetlib import STATUS
 from django.http import HttpResponse
 from rest_framework import generics, permissions, mixins, serializers
-from .models import Favourite, Report_Room, Room, Booking_Room
-from .serializers import ReportSerializer, BookingSerializer, RoomSerializer, FavouriteSerializers
+from .models import Favourite, Payment_Room, Report_Room, Room, Booking_Room
+from .serializers import PaymentSerializer, ReportSerializer, BookingSerializer, RoomSerializer, FavouriteSerializers
 from rest_framework.exceptions import ValidationError
 from Misc.booking_functions.availability import check_availability_room
 from rest_framework.views import APIView
@@ -150,3 +150,13 @@ class Fav(APIView):
         except:
             response_msg = {'error': True}
         return Response(response_msg)
+
+
+class PaymentView(generics.ListCreateAPIView):
+    permissions = [permissions.IsAuthenticated]
+    serializer_class = PaymentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    def get_queryset(self):
+        return Payment_Room.objects.filter(user=self.request.user)

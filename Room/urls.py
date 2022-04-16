@@ -10,7 +10,8 @@ urlpatterns = [
     # path('booking/<int:pk>', views.BookingRetrieveDelete.as_view(),
     #      name='Booking_delete'),
     path('fav/', views.Fav.as_view()),
-    path('getFav/',views.FavView.as_view())
+    path('getFav/', views.FavView.as_view()),
+    path('payment/', views.PaymentView.as_view()),
 
 
 ]
