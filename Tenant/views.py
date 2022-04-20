@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework import generics, status, permissions, mixins
 from Room import serializers
-from .models import Appointment, Report_Tenant, Tenant
-from .serializers import AppointmentSerializer, TenantSerializer, ReportTenant
+from .models import Appointment, Report_Tenant, Tenant, Tenant_Favourite
+from .serializers import AppointmentSerializer, TenantFavorites, TenantSerializer, ReportTenant
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
+from rest_framework.response import Response
 
 # Create your views here.
 
@@ -70,7 +71,7 @@ class TenantAppointment(generics.ListCreateAPIView):
     permissions = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Appointment.objects.filter(user=self.request.user)
+        return Appointment.objects.all()
 
     def perform_create(self, serializer):
         # available_appointment = []
@@ -88,3 +89,40 @@ class TenantAppointment(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
+class FavView(generics.ListAPIView):
+    permissions = [permissions.IsAuthenticated]
+    serializer_class = TenantFavorites
+
+    def get_queryset(self):
+        return Tenant_Favourite.objects.filter(user=self.request.user)
+
+
+class Fav(APIView):
+    permissions = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # query = Favourite.objects.all()
+            # serializer = FavouriteSerializers(query,many=True)
+            data = request.data
+            # data = request.data
+            print(data)
+            c_user = request.user
+            room_id = data['id']
+            room_obj = Tenant.objects.get(id=room_id)
+            fav_obj = Tenant_Favourite.objects.filter(
+                tenant=room_obj).filter(user=c_user).first()
+            if fav_obj:
+                old_fav = fav_obj.favourite
+                fav_obj.favourite = not old_fav
+                fav_obj.save()
+            else:
+                Tenant_Favourite.objects.create(
+                    tenant=room_obj,
+                    user=c_user,
+                    favourite=True
+                )
+            response_msg = {'error': False}
+        except:
+            response_msg = {'error': True}
+        return Response(response_msg)

@@ -159,4 +159,4 @@ class PaymentView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     def get_queryset(self):
-        return Payment_Room.objects.filter(user=self.request.user)
+        return Payment_Room.objects.all()

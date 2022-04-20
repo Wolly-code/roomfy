@@ -58,3 +58,11 @@ class Payment_Tenant(models.Model):
 
     def __str__(self) -> str:
         return f'{self.user} has paid the amount of {self.Amount} {self.Payment_date}'
+
+class Tenant_Favourite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    favourite = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Room={self .tenant} || User={self.user.username} || Favourite={self.favourite}"

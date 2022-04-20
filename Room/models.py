@@ -14,11 +14,13 @@ class Room(models.Model):
     property_type = models.CharField(max_length=30)
     total_rooms = models.IntegerField()
     price = models.IntegerField()
+    minimum_booking=models.IntegerField()
     security_deposit = models.IntegerField()
     internet = models.BooleanField(default=False)
     parking = models.BooleanField(default=False)
     Balcony = models.BooleanField(default=False)
     Yard = models.BooleanField(default=False)
+    furnished = models.BooleanField(default=False)
     Disabled_Access = models.BooleanField(default=False)
     Garage = models.BooleanField(default=False)
     status = models.BooleanField(default=True)
@@ -47,6 +49,7 @@ class Booking_Room(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in = models.DateTimeField()
     check_out = models.DateTimeField()
+    duration= models.IntegerField()
 
     def __str__(self) -> str:
         return f'{self.user} has booked {self.room} from {self.check_in} to {self.check_out}'
@@ -58,7 +61,7 @@ class Payment_Room(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     Amount = models.IntegerField()
     Payment_date = models.DateTimeField(auto_now_add=True)
-    remarks = models.CharField(max_length=30,null=True)
+    remarks = models.CharField(max_length=30, null=True)
 
     def __str__(self) -> str:
         return f'{self.user} has paid the amount of {self.Amount} {self.Payment_date}'

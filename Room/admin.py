@@ -7,3 +7,4 @@ admin.site.register(Booking_Room)
 admin.site.register(Payment_Room)
 admin.site.register(Report_Room)
 admin.site.register(Favourite)
+
