@@ -8,7 +8,7 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=15)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.CharField(max_length=50)
+    bio = models.CharField(max_length=200)
     email=models.EmailField()
     profile_pic=models.ImageField(upload_to="user")
     location=models.CharField(max_length=50)
