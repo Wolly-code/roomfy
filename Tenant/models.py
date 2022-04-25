@@ -49,16 +49,6 @@ class Appointment(models.Model):
         return f'{self.user} has booked appointment on {self.Tenant} on the date :{self.appointment_date}'
 
 
-class Payment_Tenant(models.Model):
-    Payment_ID = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    Amount = models.IntegerField()
-    Payment_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self) -> str:
-        return f'{self.user} has paid the amount of {self.Amount} {self.Payment_date}'
-
 class Tenant_Favourite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
