@@ -75,12 +75,6 @@ class ReportCreate(generics.CreateAPIView):
         serializer.save(Reporter=self.request.user,
                         post=Room.objects.get(pk=self.kwargs['pk']))
 
-    # def delete(self, request, *args, **kwargs):
-    #     if self.get_queryset().exists():
-    #         self.get_queryset().delete()
-    #         return Response(status=status.HTTP_204_NO_CONTENT)
-    #     else:
-    #         raise ValidationError('You never reported for this post')
 
 
 class BookingList(generics.ListCreateAPIView):

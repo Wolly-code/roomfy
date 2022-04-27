@@ -74,18 +74,6 @@ class TenantAppointment(generics.ListCreateAPIView):
         return Appointment.objects.all()
 
     def perform_create(self, serializer):
-        # available_appointment = []
-        # tenant_list = Tenant.objects.all()
-
-        # for tenant in tenant_list:
-        #     if check_availability_tenant(tenant=tenant, appoint=serializer.validated_data['appointment_date']):
-        #         available_appointment.append(tenant)
-
-        # if len(available_appointment) > 0:
-        #     tenant = available_appointment[0]
-        #     serializer.save(user=self.request.user, Tenant=tenant)
-        # else:
-        #     raise ValidationError('You have already booked an appointment')
         serializer.save(user=self.request.user)
 
 
