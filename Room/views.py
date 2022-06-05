@@ -75,7 +75,7 @@ class ReportCreate(generics.CreateAPIView):
         serializer.save(Reporter=self.request.user,
                         post=Room.objects.get(pk=self.kwargs['pk']))
 
-
+from django.http import JsonResponse
 
 class BookingList(generics.ListCreateAPIView):
     serializer_class = BookingSerializer
@@ -84,27 +84,36 @@ class BookingList(generics.ListCreateAPIView):
     ]
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return Booking_Room.objects.all()
-        elif self.request.user.is_authenticated:
-            return Booking_Room.objects.filter(user=self.request.user)
-        elif self.request.user.is_anonymous:
-            return Booking_Room.objects.none()
+        post = Room.objects.get(pk=self.kwargs['pk'])
+        return Booking_Room.objects.filter(user=self.request.user, room=post)
+
 
     def perform_create(self, serializer):
         if not self.request.user:
             return ValidationError("Please log in to continue")
         available_rooms = []
-        room_list = Room.objects.all()
-        for room in room_list:
-            if check_availability_room(room, check_in=serializer.validated_data['check_in'], check_out=serializer.validated_data['check_out']):
-                available_rooms.append(room)
+        user_choice = Room.objects.get(pk=self.kwargs['pk'])
+        if check_availability_room(user_choice, check_in=serializer.validated_data['check_in'], check_out=serializer.validated_data['check_out']):
+                available_rooms.append(user_choice)
 
         if len(available_rooms) > 0:
-            room = available_rooms[0]
-            serializer.save(user=self.request.user, room=room)
+            for each in available_rooms:
+                if each == user_choice:
+                    serializer.save(user=self.request.user, room=user_choice)
+                    # return JsonResponse({'error': {'code':'BOOKING_EXISTS','message':'The room you are trying to book has already been booked by other user'}}, status=400)
+                    # raise ValidationError('This room is not available')
         else:
             raise ValidationError('This room is not available')
+
+
+class ViewAllBooking(generics.ListAPIView):
+    serializer_class = BookingSerializer
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+        return Booking_Room.objects.all()
 
 
 class FavView(generics.ListAPIView):
@@ -152,5 +161,6 @@ class PaymentView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
     def get_queryset(self):
         return Payment_Room.objects.all()

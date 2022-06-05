@@ -34,7 +34,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     room_owner = serializers.ReadOnlyField(source='room.poster.username')
-
+    room=serializers.ReadOnlyField(source='room.id')
     class Meta:
         model = Booking_Room
         fields = '__all__'
